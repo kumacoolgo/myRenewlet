@@ -3,7 +3,11 @@
   "name": "myrenewlet",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-30",
+  "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
+  "secrets": {
+    "required": ["AUTH_USERNAME", "AUTH_PASSWORD"]
+  },
   "routes": [
     {
       "pattern": "renewlet.xiler.vip",

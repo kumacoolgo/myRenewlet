@@ -12,6 +12,7 @@
 - 🛡️ 保险：汽车保险、火灾保险、医疗/财产保险等有效期与续保提醒
 - 🔧 保修：iPad、家电、电脑等保修到期提醒
 - 💳 软件/服务：Microsoft 365、ChatGPT Plus、VPS、域名、Cloudflare 等
+- 🔐 登录保护：页面和 API 均需通过 Worker 账号密码认证
 
 ## 数据模型
 
@@ -83,7 +84,14 @@ npx wrangler d1 create myrenewlet
 npm run db:remote
 ```
 
-4. 部署：
+4. 交互式设置登录账号和密码（作为加密 Worker Secrets 保存，不会进入 GitHub）：
+
+```bash
+npx wrangler secret put AUTH_USERNAME
+npx wrangler secret put AUTH_PASSWORD
+```
+
+5. 部署：
 
 ```bash
 npm run deploy
@@ -103,13 +111,14 @@ renewlet.xiler.vip
 
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
-- `D1_DATABASE_ID`
 
 push 到 `main` 时自动构建、执行远程 D1 migration 并部署 Worker。
 
+`AUTH_USERNAME` 和 `AUTH_PASSWORD` 应直接保存为 Cloudflare Worker Secrets，不要放入 GitHub Actions Secrets 或仓库配置。修改任一登录 Secret 后，已有登录会话都会失效。
+
 ## Roadmap
 
-- 登录 / 家庭成员权限
+- 多账号 / 家庭成员权限
 - Telegram / Bark / 邮件提醒
 - Cron 每日到期扫描
 - R2 上传保险单、发票、保修卡
