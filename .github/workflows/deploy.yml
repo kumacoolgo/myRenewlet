@@ -10,25 +10,30 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: npm install
-      - name: Inject D1 database id
+      - name: Find or create D1 database
+        shell: bash
         run: |
-          test -n "${{ secrets.D1_DATABASE_ID }}"
-          sed -i "s/REPLACE_WITH_D1_DATABASE_ID/${{ secrets.D1_DATABASE_ID }}/g" wrangler.jsonc
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          DATABASE_ID="$(npx wrangler d1 list --json | jq -r '.[] | select(.name == "myrenewlet") | .uuid' | head -n 1)"
+          if [ -z "$DATABASE_ID" ]; then
+            npx wrangler d1 create myrenewlet
+            DATABASE_ID="$(npx wrangler d1 list --json | jq -r '.[] | select(.name == "myrenewlet") | .uuid' | head -n 1)"
+          fi
+          test -n "$DATABASE_ID"
+          sed -i "s/REPLACE_WITH_D1_DATABASE_ID/$DATABASE_ID/g" wrangler.jsonc
       - name: Typecheck
         run: npm run typecheck
       - name: Apply D1 migrations
         run: npx wrangler d1 migrations apply DB --remote
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       - name: Deploy Worker
         run: npx wrangler deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
