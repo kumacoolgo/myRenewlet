@@ -15,10 +15,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
       - run: npm install
       - name: Inject D1 database id
-        run: sed -i "s/REPLACE_WITH_D1_DATABASE_ID/${{ secrets.D1_DATABASE_ID }}/g" wrangler.jsonc
+        run: |
+          test -n "${{ secrets.D1_DATABASE_ID }}"
+          sed -i "s/REPLACE_WITH_D1_DATABASE_ID/${{ secrets.D1_DATABASE_ID }}/g" wrangler.jsonc
       - name: Typecheck
         run: npm run typecheck
       - name: Apply D1 migrations
