@@ -1,4 +1,4 @@
-# MyRenewlet
+# MyBills
 
 基于 Renewlet 思路重构的家庭固定支出、合同、保险与保修生命周期管理器。
 

@@ -1,4 +1,4 @@
-name: Deploy MyRenewlet
+name: Deploy MyBills
 
 on:
   push:
