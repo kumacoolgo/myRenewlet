@@ -10,7 +10,7 @@
   },
   "routes": [
     {
-      "pattern": "renewlet.xiler.vip",
+      "pattern": "mybills.xiler.vip",
       "custom_domain": true
     }
   ],
