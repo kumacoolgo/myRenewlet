@@ -14,7 +14,8 @@
     {
       "binding": "DB",
       "database_name": "myrenewlet",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID"
+      "database_id": "6b304275-ac62-4d90-bd81-3b113af8d8cf",
+      "migrations_dir": "migrations"
     }
   ],
   "triggers": {
